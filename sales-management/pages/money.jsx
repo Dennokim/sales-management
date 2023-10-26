@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  addExpense,
-  getExpense,
-  editExpense,
-  deleteExpense,
-} from "../firebase/finance/expense/expense";
+  addIncome,
+  getIncome,
+  editIncome,
+  deleteIncome,
+} from "../firebase/finance/income/income";
 
-const Expense = () => {
-  const [expenses, setExpenses] = useState([]);
-  const [totalExpense, setTotalExpense] = useState(0);
+const Money = () => {
+  const [income, setIncome] = useState([]);
+  const [totalIncome, setTotalIncome] = useState(0);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -17,37 +17,37 @@ const Expense = () => {
   const [editID, setEditID] = useState(null);
 
   useEffect(() => {
-    const fetchExpenses = async () => {
-      await getExpense(setExpenses);
+    const fetchIncome = async () => {
+      await getIncome(setIncome);
     };
-    fetchExpenses();
+    fetchIncome();
   }, []);
 
   useEffect(() => {
     let total = 0;
-    expenses.forEach((expense) => {
-      total += parseFloat(expense.amount); // assuming the amount is in string format
+    income.forEach((income) => {
+      total += parseFloat(income.amount); // assuming the amount is in string format
     });
-    setTotalExpense(total);
-  }, [expenses]);
+    setTotalIncome(total);
+  }, [income]);
 
-  const handleAddExpense = () => {
-    addExpense(name, amount, description, category);
+  const handleAddIncome = () => {
+    addIncome(name, amount, description, category);
   };
 
-  const handleEditExpense = (id, expenseName, newAmount, newDescription) => {
-    editExpense(id, expenseName, newAmount, newDescription);
+  const handleEditIncome = (id, incomeName, newAmount, newDescription) => {
+    editIncome(id, incomeName, newAmount, newDescription);
     setEditing(false);
     setEditID(null);
   };
 
-  const handleDeleteExpense = (id, name) => {
-    deleteExpense(id, name);
+  const handleDeleteIncome = (id, name) => {
+    deleteIncome(id, name);
   };
 
   return (
     <div>
-      <h1>Expense Page</h1>
+      <h1>Income Page</h1>
       <div>
         <input
           type="text"
@@ -70,12 +70,12 @@ const Expense = () => {
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           {/* Options for categories */}
         </select>
-        <button onClick={handleAddExpense}>Add Expense</button>
+        <button onClick={handleAddIncome}>Add Income</button>
       </div>
       <div>
-        {expenses.map((expense) => (
-          <div key={expense.id}>
-            {editing && editID === expense.id ? (
+        {income.map((income) => (
+          <div key={income.id}>
+            {editing && editID === income.id ? (
               <div>
                 <input
                   type="text"
@@ -94,7 +94,7 @@ const Expense = () => {
                 />
                 <button
                   onClick={() =>
-                    handleEditExpense(expense.id, name, amount, description)
+                    handleEditIncome(income.id, name, amount, description)
                   }
                 >
                   Save
@@ -102,22 +102,22 @@ const Expense = () => {
               </div>
             ) : (
               <div>
-                <p>Name: {expense.name}</p>
-                <p>Amount: {expense.amount}</p>
-                <p>Description: {expense.description}</p>
+                <p>Name: {income.name}</p>
+                <p>Amount: {income.amount}</p>
+                <p>Description: {income.description}</p>
                 <button
                   onClick={() => {
                     setEditing(true);
-                    setEditID(expense.id);
-                    setName(expense.name);
-                    setAmount(expense.amount);
-                    setDescription(expense.description);
+                    setEditID(income.id);
+                    setName(income.name);
+                    setAmount(income.amount);
+                    setDescription(income.description);
                   }}
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteExpense(expense.id, expense.name)}
+                  onClick={() => handleDeleteIncome(income.id, income.name)}
                 >
                   Delete
                 </button>
@@ -127,10 +127,10 @@ const Expense = () => {
         ))}
       </div>
       <div>
-        <p>Total Expense: {totalExpense}</p>
+        <p>Total Income: {totalIncome}</p>
       </div>
     </div>
   );
 };
 
-export default Expense;
+export default Money;

@@ -5,6 +5,7 @@ import {
   editExpense,
   deleteExpense,
 } from "../firebase/finance/expense/expense";
+import { getExpenseCategory } from "../firebase/finance/category/category";
 
 const Expense = () => {
   const [expenses, setExpenses] = useState([]);
@@ -13,14 +14,13 @@ const Expense = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [expenseCategories, setExpenseCategories] = useState([]);
   const [editing, setEditing] = useState(false);
   const [editID, setEditID] = useState(null);
 
   useEffect(() => {
-    const fetchExpenses = async () => {
-      await getExpense(setExpenses);
-    };
-    fetchExpenses();
+    getExpense(setExpenses);
+    getExpenseCategory(setExpenseCategories);
   }, []);
 
   useEffect(() => {
@@ -33,16 +33,24 @@ const Expense = () => {
 
   const handleAddExpense = () => {
     addExpense(name, amount, description, category);
+    setName("");
+    setAmount("");
+    setDescription("");
+    setCategory("");
   };
 
-  const handleEditExpense = (id, expenseName, newAmount, newDescription) => {
-    editExpense(id, expenseName, newAmount, newDescription);
+  const handleEditExpense = (id) => {
+    editExpense(id, name, amount, description, category);
     setEditing(false);
     setEditID(null);
+    setName("");
+    setAmount("");
+    setDescription("");
+    setCategory("");
   };
 
-  const handleDeleteExpense = (id, name) => {
-    deleteExpense(id, name);
+  const handleDeleteExpense = (id) => {
+    deleteExpense(id);
   };
 
   return (
@@ -67,10 +75,19 @@ const Expense = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {/* Options for categories */}
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          {expenseCategories.map((category) => (
+            <option key={category.id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
         </select>
-        <button onClick={handleAddExpense}>Add Expense</button>
+        <button onClick={editing ? handleEditExpense : handleAddExpense}>
+          {editing ? "Edit Expense" : "Add Expense"}
+        </button>
       </div>
       <div>
         {expenses.map((expense) => (
@@ -92,11 +109,17 @@ const Expense = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-                <button
-                  onClick={() =>
-                    handleEditExpense(expense.id, name, amount, description)
-                  }
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
                 >
+                  {expenseCategories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                <button onClick={() => handleEditExpense(expense.id)}>
                   Save
                 </button>
               </div>
@@ -105,6 +128,7 @@ const Expense = () => {
                 <p>Name: {expense.name}</p>
                 <p>Amount: {expense.amount}</p>
                 <p>Description: {expense.description}</p>
+                <p>Category: {expense.category}</p>
                 <button
                   onClick={() => {
                     setEditing(true);
@@ -112,13 +136,12 @@ const Expense = () => {
                     setName(expense.name);
                     setAmount(expense.amount);
                     setDescription(expense.description);
+                    setCategory(expense.category);
                   }}
                 >
                   Edit
                 </button>
-                <button
-                  onClick={() => handleDeleteExpense(expense.id, expense.name)}
-                >
+                <button onClick={() => handleDeleteExpense(expense.id)}>
                   Delete
                 </button>
               </div>

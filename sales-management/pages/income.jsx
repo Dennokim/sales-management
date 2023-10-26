@@ -1,165 +1,133 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   addIncome,
-  getIncome,
   editIncome,
   deleteIncome,
+  getAllIncomes,
 } from "../firebase/finance/income/income";
+import { getIncomeCategory } from "../firebase/finance/category/category";
 
-const IncomePage = () => {
-  const [income, setIncome] = useState([]);
-  const [newIncome, setNewIncome] = useState({
-    name: "",
-    amount: 0,
-    description: "",
-    category: "",
-  });
-  const [editMode, setEditMode] = useState(false);
-  const [editID, setEditID] = useState(null);
+export default function IncomePage() {
+  const [incomeData, setIncomeData] = useState([]);
+  const [selectedIncomeId, setSelectedIncomeId] = useState(null);
+  const [incomeName, setIncomeName] = useState("");
+  const [incomeAmount, setIncomeAmount] = useState("");
+  const [incomeDescription, setIncomeDescription] = useState("");
+  const [incomeCategory, setIncomeCategory] = useState("");
+  const [incomeCategories, setIncomeCategories] = useState([]);
 
   useEffect(() => {
-    const fetchIncome = async () => {
-      await getIncome(setIncome);
-    };
-    fetchIncome();
+    getAllIncomes(setIncomeData);
+    getIncomeCategory(setIncomeCategories);
   }, []);
 
   const handleAddIncome = async () => {
     await addIncome(
-      newIncome.name,
-      newIncome.amount,
-      newIncome.description,
-      newIncome.category
+      incomeName,
+      incomeAmount,
+      incomeDescription,
+      incomeCategory
     );
-    setNewIncome({ name: "", amount: 0, description: "", category: "" });
+    setIncomeName("");
+    setIncomeAmount("");
+    setIncomeDescription("");
+    setIncomeCategory("");
   };
 
-  const handleEditIncome = async (id, newName, newAmount, newDescription) => {
-    await editIncome(id, newName, newAmount, newDescription);
-    setEditMode(false);
-    setEditID(null);
+  const handleEditIncome = async () => {
+    await editIncome(
+      selectedIncomeId,
+      incomeName,
+      incomeAmount,
+      incomeDescription,
+      incomeCategory
+    );
+    setSelectedIncomeId(null);
+    setIncomeName("");
+    setIncomeAmount("");
+    setIncomeDescription("");
+    setIncomeCategory("");
   };
 
-  const handleDeleteIncome = async (id, name) => {
-    await deleteIncome(id, name);
+  const handleDeleteIncome = async (id) => {
+    await deleteIncome(id);
   };
 
   return (
-    <div>
-      <h1>Income Page</h1>
-      <h2>Add Income</h2>
-      <form onSubmit={handleAddIncome}>
-        <input
-          type="text"
-          value={newIncome.name}
-          onChange={(e) => setNewIncome({ ...newIncome, name: e.target.value })}
-          placeholder="Name"
-        />
-        <input
-          type="number"
-          value={newIncome.amount}
-          onChange={(e) =>
-            setNewIncome({ ...newIncome, amount: e.target.value })
-          }
-          placeholder="Amount"
-        />
-        <input
-          type="text"
-          value={newIncome.description}
-          onChange={(e) =>
-            setNewIncome({ ...newIncome, description: e.target.value })
-          }
-          placeholder="Description"
-        />
-        <input
-          type="text"
-          value={newIncome.category}
-          onChange={(e) =>
-            setNewIncome({ ...newIncome, category: e.target.value })
-          }
-          placeholder="Category"
-        />
-        <button type="submit">Add</button>
-      </form>
-      <h2>Income List</h2>
-      <ul>
-        {income.map((item) => (
-          <li key={item.id}>
-            {editMode && editID === item.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={item.name}
-                  onChange={(e) =>
-                    handleEditIncome(
-                      item.id,
-                      e.target.value,
-                      item.amount,
-                      item.description
-                    )
-                  }
-                />
-                <input
-                  type="number"
-                  value={item.amount}
-                  onChange={(e) =>
-                    handleEditIncome(
-                      item.id,
-                      item.name,
-                      e.target.value,
-                      item.description
-                    )
-                  }
-                />
-                <input
-                  type="text"
-                  value={item.description}
-                  onChange={(e) =>
-                    handleEditIncome(
-                      item.id,
-                      item.name,
-                      item.amount,
-                      e.target.value
-                    )
-                  }
-                />
-                <button
-                  onClick={() =>
-                    handleEditIncome(
-                      item.id,
-                      item.name,
-                      item.amount,
-                      item.description
-                    )
-                  }
-                >
-                  Save
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p>Name: {item.name}</p>
-                <p>Amount: {item.amount}</p>
-                <p>Description: {item.description}</p>
-                <p>Category: {item.category}</p>
-                <button
-                  onClick={() => {
-                    setEditMode(true);
-                    setEditID(item.id);
-                  }}
-                >
-                  Edit
-                </button>
-                <button onClick={() => handleDeleteIncome(item.id, item.name)}>
-                  Delete
-                </button>
-              </div>
-            )}
-          </li>
+    <div className="container mx-auto px-4">
+      <div className="flex items-center justify-between py-6">
+        <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Name..."
+            value={incomeName}
+            onChange={(e) => setIncomeName(e.target.value)}
+            className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
+          />
+          <input
+            type="number"
+            placeholder="Amount..."
+            value={incomeAmount}
+            onChange={(e) => setIncomeAmount(e.target.value)}
+            className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
+          />
+          <input
+            type="text"
+            placeholder="Description..."
+            value={incomeDescription}
+            onChange={(e) => setIncomeDescription(e.target.value)}
+            className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
+          />
+          <select
+            value={incomeCategory}
+            onChange={(e) => setIncomeCategory(e.target.value)}
+            className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
+          >
+            {incomeCategories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={selectedIncomeId ? handleEditIncome : handleAddIncome}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            {selectedIncomeId ? "Edit" : "Add"}
+          </button>
+        </div>
+      </div>
+      <div>
+        {incomeData.map((income) => (
+          <div
+            key={income.id}
+            className="flex items-center justify-between py-3 border-b"
+          >
+            <p>{`Name: ${income.name}, Amount: ${income.amount}, Description: ${income.description}, Category: ${income.category}`}</p>
+
+            <div>
+              <button
+                onClick={() => {
+                  setSelectedIncomeId(income.id);
+                  setIncomeName(income.name);
+                  setIncomeAmount(income.amount);
+                  setIncomeDescription(income.description);
+                  setIncomeCategory(income.category);
+                }}
+                className="mr-4 px-3 py-1 bg-yellow-500 text-white rounded-md"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteIncome(income.id)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
-};
-
-export default IncomePage;
+}

@@ -5,6 +5,7 @@ import {
   getTotalSales,
   getSalesForDay,
 } from "../firebase/sales/sales";
+import { addIncome } from "../firebase/finance/income/income";
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
@@ -40,6 +41,20 @@ const Sales = () => {
       newSale.totalAmount,
       setAddNew
     );
+
+    // Integrate addIncome function
+    newSale.products.forEach((product) => {
+      addIncome(
+        product.name,
+        product.amount * product.quantity,
+        `Income from sales of ${newSale.customerName} (${product.name})`,
+        "Sales"
+      );
+    });
+
+    setSaleItems([]);
+    setCustomerName("");
+    setCustomerEmail("");
   };
 
   const handleAddItem = () => {
@@ -113,14 +128,6 @@ const Sales = () => {
           ))}
         </div>
       ))}
-
-      <h1>Filter Sales by Date</h1>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <button onClick={handleGetSalesForDay}>Filter</button>
     </div>
   );
 };

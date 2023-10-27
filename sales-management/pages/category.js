@@ -4,6 +4,7 @@ import {
   deleteCategory,
   getCategories,
 } from "../firebase/category/category";
+import Layout from "../components/Layout";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -28,30 +29,32 @@ const Categories = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Categories</h1>
+    <Layout>
       <div>
-        <input
-          type="text"
-          value={newCategoryName}
-          onChange={(e) => setNewCategoryName(e.target.value)}
-          placeholder="Enter category name"
-        />
-        <button onClick={handleAddCategory}>Add Category</button>
+        <h1>Categories</h1>
+        <div>
+          <input
+            type="text"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder="Enter category name"
+          />
+          <button onClick={handleAddCategory}>Add Category</button>
+        </div>
+        <ul>
+          {categories.map((category) => (
+            <li key={category.id}>
+              {category.name}
+              <button
+                onClick={() => handleDeleteCategory(category.id, category.name)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul>
-        {categories.map((category) => (
-          <li key={category.id}>
-            {category.name}
-            <button
-              onClick={() => handleDeleteCategory(category.id, category.name)}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    </Layout>
   );
 };
 

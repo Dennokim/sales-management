@@ -4,7 +4,7 @@ import {
   getExpenseCategory,
   addIncomeCategory,
   getIncomeCategory,
-} from "../firebase/finance/category/category";
+} from "../../../firebase/finance/category/category";
 
 const Choose = () => {
   const [expenseCategory, setExpenseCategory] = useState([]);

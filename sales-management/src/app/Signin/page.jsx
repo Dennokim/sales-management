@@ -1,12 +1,13 @@
 "use client";
-import React from "react";
-import signIn from "../firebase/auth/signin";
-import { useRouter } from "next/router";
 
-function Page() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const router = useRouter();
+import React, { useState } from "react";
+import signIn from "../../../firebase/auth/signin";
+import { usePathname } from "next/navigation";
+
+function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const pathname = usePathname();
 
   const handleForm = async (event) => {
     event.preventDefault();
@@ -19,7 +20,7 @@ function Page() {
 
     // else successful
     console.log(result);
-    return router.push("/admin");
+    return (window.location.href = "/Dashboard");
   };
   return (
     <div className="wrapper">
@@ -48,11 +49,11 @@ function Page() {
               placeholder="password"
             />
           </label>
-          <button type="submit">Sign up</button>
+          <button type="submit">Sign in</button>
         </form>
       </div>
     </div>
   );
 }
 
-export default Page;
+export default SignIn;

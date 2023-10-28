@@ -1,11 +1,14 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   addSales,
   getSales,
   getTotalSales,
   getSalesForDay,
-} from "../firebase/sales/sales";
-import { addIncome } from "../firebase/finance/income/income";
+} from "../../../firebase/sales/sales";
+import { addIncome } from "../../../firebase/finance/income/income";
+import Layout from "../components/Layout";
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
@@ -74,61 +77,63 @@ const Sales = () => {
   };
 
   return (
-    <div>
-      <h1>Add Sales</h1>
-      <input
-        type="text"
-        placeholder="Customer Name"
-        value={customerName}
-        onChange={(e) => setCustomerName(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Customer Email"
-        value={customerEmail}
-        onChange={(e) => setCustomerEmail(e.target.value)}
-      />
-      <h2>Add Items to Sale</h2>
-      <input
-        type="text"
-        placeholder="Product"
-        value={product}
-        onChange={(e) => setProduct(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Price"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Quantity"
-        value={quantity}
-        onChange={(e) => setQuantity(e.target.value)}
-      />
-      <button onClick={handleAddItem}>Add Item</button>
-      <br />
-      <br />
-      <button onClick={handleAddSales}>Add Sales</button>
+    <Layout>
+      <div>
+        <h1>Add Sales</h1>
+        <input
+          type="text"
+          placeholder="Customer Name"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Customer Email"
+          value={customerEmail}
+          onChange={(e) => setCustomerEmail(e.target.value)}
+        />
+        <h2>Add Items to Sale</h2>
+        <input
+          type="text"
+          placeholder="Product"
+          value={product}
+          onChange={(e) => setProduct(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Quantity"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
+        <button onClick={handleAddItem}>Add Item</button>
+        <br />
+        <br />
+        <button onClick={handleAddSales}>Add Sales</button>
 
-      <h1>All Sales</h1>
-      {sales.map((sale) => (
-        <div key={sale.id}>
-          <p>Sale ID: {sale.id}</p>
-          <p>Customer Name: {sale.customerName}</p>
-          <p>Customer Email: {sale.customerEmail}</p>
-          <p>Total Amount: {sale.totalAmount}</p>
-          {sale.products.map((item, index) => (
-            <div key={index}>
-              <p>Product: {item.name}</p>
-              <p>Price: {item.amount}</p>
-              <p>Quantity: {item.quantity}</p>
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
+        <h1>All Sales</h1>
+        {sales.map((sale) => (
+          <div key={sale.id}>
+            <p>Sale ID: {sale.id}</p>
+            <p>Customer Name: {sale.customerName}</p>
+            <p>Customer Email: {sale.customerEmail}</p>
+            <p>Total Amount: {sale.totalAmount}</p>
+            {sale.products.map((item, index) => (
+              <div key={index}>
+                <p>Product: {item.name}</p>
+                <p>Price: {item.amount}</p>
+                <p>Quantity: {item.quantity}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </Layout>
   );
 };
 

@@ -1,9 +1,11 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   addCategory,
   deleteCategory,
   getCategories,
-} from "../firebase/category/category";
+} from "../../../firebase/category/category";
 import Layout from "../components/Layout";
 
 const Categories = () => {

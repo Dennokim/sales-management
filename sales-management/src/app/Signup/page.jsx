@@ -1,26 +1,27 @@
-'use client'
-import React from 'react'
-import signUp from '../firebase/auth/signup'
-import { useRouter } from 'next/router'
+"use client";
 
-function Page() {
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const router = useRouter()
+import React, { useState } from "react";
+import signUp from "../../../firebase/auth/signup";
+import { usePathname } from "next/navigation";
+
+function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const pathname = usePathname();
 
   const handleForm = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const { result, error } = await signUp(email, password)
+    const { result, error } = await signUp(email, password);
 
     if (error) {
-      return console.log(error)
+      return console.log(error);
     }
 
     // else successful
-    console.log(result)
-    return router.push('/')
-  }
+    console.log(result);
+    return (window.location.href = "/Dashboard");
+  };
   return (
     <div className="wrapper">
       <div className="form-wrapper">
@@ -52,7 +53,7 @@ function Page() {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default Page
+export default SignUp;

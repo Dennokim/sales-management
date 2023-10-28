@@ -1,29 +1,26 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 const Sidebar = () => {
-  const router = useRouter();
-
   return (
-    <div>
+    <div className="fixed inset-y-0 right-0 w-64 bg-blue-200 overflow-auto">
       <ul>
         <li>
           <Link href="/Dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link href="/finance">Finance</Link>
+          <Link href="/Finance">Finance</Link>
         </li>
         <li>
-          <Link href="/sales">Sales</Link>
+          <Link href="/Sales">Sales</Link>
         </li>
         <li>
-          <Link href="/product">Products</Link>
+          <Link href="/Product">Products</Link>
         </li>
         <li>
-          <Link href="/category">Categories</Link>
+          <Link href="/Category">Category</Link>
         </li>
         <li>
-          <Link href="/logout">Log out</Link>
+          <Link href="/Logout">Log out</Link>
         </li>
       </ul>
     </div>

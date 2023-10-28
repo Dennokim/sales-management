@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import signIn from "../../../firebase/auth/signin";
 import { usePathname } from "next/navigation";
 
-function SignIn() {
+function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const pathname = usePathname();
@@ -20,12 +20,12 @@ function SignIn() {
 
     // else successful
     console.log(result);
-    return (window.location.href = "/Dashboard");
+    return (window.location.href = "/dashboard");
   };
   return (
     <div className="wrapper">
       <div className="form-wrapper">
-        <h1 className="mb-30 mt-60">Sign up</h1>
+        <h1 className="mb-30 mt-60">Log in</h1>
         <form onSubmit={handleForm} className="form">
           <label htmlFor="email">
             <p>Email</p>
@@ -49,11 +49,11 @@ function SignIn() {
               placeholder="password"
             />
           </label>
-          <button type="submit">Sign in</button>
+          <button type="submit">Log in</button>
         </form>
       </div>
     </div>
   );
 }
 
-export default SignIn;
+export default LogIn;

@@ -20,7 +20,7 @@ function SignUp() {
 
     // else successful
     console.log(result);
-    return (window.location.href = "/Dashboard");
+    return (window.location.href = "/dashboard");
   };
   return (
     <div className="wrapper">

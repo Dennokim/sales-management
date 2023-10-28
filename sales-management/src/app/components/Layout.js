@@ -1,9 +1,9 @@
-import Sidebar from './Sidebar';
+import SideBar from "./Sidebar";
 
 const Layout = ({ children }) => {
   return (
     <div className="layout">
-      <Sidebar />
+      <SideBar />
       <div className="content">{children}</div>
     </div>
   );

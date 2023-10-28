@@ -1,30 +1,30 @@
 import Link from "next/link";
 
-const Sidebar = () => {
+const SideBar = () => {
   return (
     <div className="fixed inset-y-0 right-0 w-64 bg-blue-200 overflow-auto">
       <ul>
         <li>
-          <Link href="/Dashboard">Dashboard</Link>
+          <Link href="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link href="/Finance">Finance</Link>
+          <Link href="/finance">Finance</Link>
         </li>
         <li>
-          <Link href="/Sales">Sales</Link>
+          <Link href="/sales">Sales</Link>
         </li>
         <li>
-          <Link href="/Product">Products</Link>
+          <Link href="/product">Products</Link>
         </li>
         <li>
-          <Link href="/Category">Category</Link>
+          <Link href="/category">Category</Link>
         </li>
         <li>
-          <Link href="/Logout">Log out</Link>
+          <Link href="/logout">Log out</Link>
         </li>
       </ul>
     </div>
   );
 };
 
-export default Sidebar;
+export default SideBar;

@@ -1,110 +1,83 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  addProduct,
-  deleteProduct,
-  getProducts,
-} from "../../../firebase/product/product";
-import { getCategories } from "../../../firebase/category/category";
+import { getProducts, deleteProduct } from "../../../firebase/product/product";
 import Layout from "../components/Layout";
+import ProductForm from "../components/productForm";
 
-const Product = () => {
+const ProductPage = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [stock, setStock] = useState(0);
-  const [description, setDescription] = useState("");
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      await getProducts(setProducts);
-    };
     fetchProducts();
-
-    const fetchCategories = async () => {
-      await getCategories(setCategories);
-    };
-    fetchCategories();
   }, []);
 
-  const handleAddProduct = async () => {
-    if (name && price && stock && selectedCategory) {
-      await addProduct(name, price, stock, selectedCategory, description);
-      setName("");
-      setPrice(0);
-      setStock(0);
-      setSelectedCategory("");
-      setDescription("");
-    }
+  const fetchProducts = async () => {
+    await getProducts(setProducts);
   };
 
   const handleDeleteProduct = async (id, name) => {
     await deleteProduct(id, name);
+    fetchProducts();
+  };
+
+  const handleUpdateProduct = (id) => {
+    // Implement update functionality here
+    console.log(`Updating product with id: ${id}`);
   };
 
   return (
     <Layout>
-      <div>
-        <h1>Product Page</h1>
-        <div>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Product Name"
-          />
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Price"
-          />
-          <input
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            placeholder="Stock"
-          />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+      <div className="relative">
+        <div className="flex justify-between items-center">
+          <h1 className="font-bold text-xl mb-5">Products</h1>
+          <button
+            onClick={() => setIsAddingProduct(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            <option value="">Select a Category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
-          />
-          <button onClick={handleAddProduct}>Add Product</button>
+            Add Product
+          </button>
         </div>
-        <ul>
+        <div className={`${isAddingProduct ? "opacity-50" : ""}`}>
           {products.map((product) => (
-            <li key={product.id}>
-              <p>Name: {product.name}</p>
-              <p>Price: {product.price}</p>
-              <p>Stock: {product.stock}</p>
-              <p>Description: {product.description}</p>
-              <button
-                onClick={() => handleDeleteProduct(product.id, product.name)}
-              >
-                Delete
-              </button>
-            </li>
+            <div key={product.id} className="p-4 border-b border-gray-200 flex">
+              <div className="w-1/5">
+                <h2 className="font-bold text-lg">{product.name}</h2>
+              </div>
+              <div className="w-1/5">
+                <p>Price: {product.price}</p>
+              </div>
+              <div className="w-1/5">
+                <p>Stock: {product.stock}</p>
+              </div>
+              <div className="w-1/5">
+                <p>Description: {product.description}</p>
+              </div>
+              <div className="w-1/5">
+                <button
+                  onClick={() => handleDeleteProduct(product.id, product.name)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
+        {isAddingProduct && (
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <ProductForm
+              onProductAdded={() => {
+                fetchProducts();
+                setIsAddingProduct(false);
+              }}
+            />
+          </div>
+        )}
       </div>
     </Layout>
   );
 };
 
-export default Product;
+export default ProductPage;

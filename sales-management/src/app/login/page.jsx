@@ -23,12 +23,14 @@ function LogIn() {
     return (window.location.href = "/dashboard");
   };
   return (
-    <div className="wrapper">
-      <div className="form-wrapper">
-        <h1 className="mb-30 mt-60">Log in</h1>
+    <div className="wrapper flex items-center justify-center h-screen bg-white">
+      <div className="form-wrapper w-full max-w-xs">
+        <h1 className="text-center text-2xl mb-6 font-bold">Log in</h1>
         <form onSubmit={handleForm} className="form">
-          <label htmlFor="email">
-            <p>Email</p>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
             <input
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -36,10 +38,13 @@ function LogIn() {
               name="email"
               id="email"
               placeholder="example@mail.com"
+              className="w-full px-3 py-2 border rounded"
             />
-          </label>
-          <label htmlFor="password">
-            <p>Password</p>
+          </div>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+              Password
+            </label>
             <input
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -47,9 +52,14 @@ function LogIn() {
               name="password"
               id="password"
               placeholder="password"
+              className="w-full px-3 py-2 border rounded"
             />
-          </label>
-          <button type="submit">Log in</button>
+          </div>
+          <div className="text-center">
+            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Log in
+            </button>
+          </div>
         </form>
       </div>
     </div>

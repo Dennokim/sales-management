@@ -33,25 +33,44 @@ const Categories = () => {
   return (
     <Layout>
       <div>
-        <h1>Categories</h1>
-        <div>
-          <input
-            type="text"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder="Enter category name"
-          />
-          <button onClick={handleAddCategory}>Add Category</button>
+        <h1 className="font-bold text-xl mb-5">Categories</h1>
+        <h2 className="font-medium text-lg mb-5">Add product category</h2>
+        <div className="mb-10">
+          <div className="mt-10 r">
+            <input
+              type="text"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder="Enter category name"
+              className="ml-3 px-3 py-2 border rounded"
+            />
+            <button
+              onClick={handleAddCategory}
+              className="bg-blue-500 text-white px-4 py-2 rounded ml-3"
+            >
+              Add Category
+            </button>
+          </div>
         </div>
-        <ul>
+        <ul className="border-b border-gray-200">
           {categories.map((category) => (
-            <li key={category.id}>
-              {category.name}
-              <button
-                onClick={() => handleDeleteCategory(category.id, category.name)}
-              >
-                Delete
-              </button>
+            <li
+              key={category.id}
+              className="flex justify-between items-center mb-3 border-b border-gray-200"
+            >
+              <div>
+                <p>{category.name}</p>
+              </div>
+              <div>
+                <button
+                  onClick={() =>
+                    handleDeleteCategory(category.id, category.name)
+                  }
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

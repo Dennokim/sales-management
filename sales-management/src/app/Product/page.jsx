@@ -22,11 +22,6 @@ const ProductPage = () => {
     fetchProducts();
   };
 
-  const handleUpdateProduct = (id) => {
-    // Implement update functionality here
-    console.log(`Updating product with id: ${id}`);
-  };
-
   return (
     <Layout>
       <div className="relative">

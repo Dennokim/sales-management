@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { addSales, getSales } from "../../../firebase/sales/sales";
+import { getSales } from "../../../firebase/sales/sales";
 import Layout from "../components/Layout";
 import SalesForm from "../components/salesForm";
 

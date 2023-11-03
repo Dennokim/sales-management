@@ -54,30 +54,34 @@ const Expense = () => {
   };
 
   return (
-    <div>
-      <h1>Expense Page</h1>
-      <div>
+    <div className="container mx-auto px-4">
+      <h1 className="text-2xl font-bold mb-4">Expense Page</h1>
+      <div className="mb-4">
         <input
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
         />
         <input
           type="text"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
         />
         <input
           type="text"
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          className="mr-4 px-3 py-2 bg-gray-200 rounded-md focus:outline-none"
         >
           {expenseCategories.map((category) => (
             <option key={category.id} value={category.name}>
@@ -85,50 +89,34 @@ const Expense = () => {
             </option>
           ))}
         </select>
-        <button onClick={editing ? handleEditExpense : handleAddExpense}>
+        <button
+          onClick={editing ? handleEditExpense : handleAddExpense}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+        >
           {editing ? "Edit Expense" : "Add Expense"}
         </button>
       </div>
       <div>
         {expenses.map((expense) => (
-          <div key={expense.id}>
-            {editing && editID === expense.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-                <input
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+          <div
+            key={expense.id}
+            className="flex items-center justify-between py-3 border-b"
+          >
+            <div>
+              <p className="text-lg font-bold">{expense.name}</p>
+              <p>Amount: {expense.amount}</p>
+              <p>Description: {expense.description}</p>
+              <p>Category: {expense.category}</p>
+            </div>
+            <div>
+              {editing && editID === expense.id ? (
+                <button
+                  onClick={() => handleEditExpense(expense.id)}
+                  className="px-3 py-1 bg-green-500 text-white rounded-md mr-2"
                 >
-                  {expenseCategories.map((category) => (
-                    <option key={category.id} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <button onClick={() => handleEditExpense(expense.id)}>
                   Save
                 </button>
-              </div>
-            ) : (
-              <div>
-                <p>Name: {expense.name}</p>
-                <p>Amount: {expense.amount}</p>
-                <p>Description: {expense.description}</p>
-                <p>Category: {expense.category}</p>
+              ) : (
                 <button
                   onClick={() => {
                     setEditing(true);
@@ -138,19 +126,23 @@ const Expense = () => {
                     setDescription(expense.description);
                     setCategory(expense.category);
                   }}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded-md mr-2"
                 >
                   Edit
                 </button>
-                <button onClick={() => handleDeleteExpense(expense.id)}>
-                  Delete
-                </button>
-              </div>
-            )}
+              )}
+              <button
+                onClick={() => handleDeleteExpense(expense.id)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
       <div>
-        <p>Total Expense: {totalExpense}</p>
+        <p className="text-xl font-bold mt-4">Total Expense: {totalExpense}</p>
       </div>
     </div>
   );

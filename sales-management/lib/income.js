@@ -25,7 +25,6 @@ export default function IncomePage() {
   const [incomeCategories, setIncomeCategories] = useState([]);
 
   const svgRef = useRef();
-
   const drawPieChart = () => {
     const width = 300;
     const height = 300;
@@ -48,13 +47,8 @@ export default function IncomePage() {
 
     const arc = d3
       .arc()
-      .innerRadius(0)
-      .outerRadius(radius - 30);
-
-    const arcLabel = d3
-      .arc()
-      .innerRadius(radius - 40)
-      .outerRadius(radius - 40);
+      .innerRadius(radius * 0.5) // Adjust the inner radius to create the ring effect
+      .outerRadius(radius);
 
     const arcs = svg
       .selectAll("g.arc")
@@ -71,10 +65,27 @@ export default function IncomePage() {
       .append("title")
       .text((d) => `${d.data.category}: ${d.data.amount}`);
 
-    arcs
+    // Display category names below the chart
+    const legend = svg
+      .selectAll(".legend")
+      .data(data)
+      .enter()
+      .append("g")
+      .attr("class", "legend")
+      .attr("transform", (d, i) => `translate(0, ${20 + i * 20})`);
+
+    legend
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 15)
+      .attr("height", 15)
+      .attr("fill", (d) => color(d.data.category));
+
+    legend
       .append("text")
-      .attr("transform", (d) => `translate(${arcLabel.centroid(d)})`)
-      .attr("dy", "0.35em")
+      .attr("x", 20)
+      .attr("y", 12)
       .text((d) => d.data.category);
   };
 

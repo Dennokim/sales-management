@@ -1,170 +1,110 @@
-import React, { useState, useEffect, useRef } from "react";
-import * as d3 from "d3";
-import { ArcElement, Chart } from "chart.js";
+import React, { useState, useEffect } from "react";
+import { Doughnut } from "react-chartjs-2";
+import { getAllIncomes } from "../firebase/finance/income/income";
+import { getIncomeCategory } from "../firebase/finance/category/category";
 import IncomeForm from "@/app/components/incomeForm";
 
+import { ArcElement, Chart } from "chart.js";
+
 Chart.register(ArcElement);
+const Finance = () => {
+  const [incomes, setIncomes] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [chartData, setChartData] = useState({});
+  const [showForm, setShowForm] = useState(false);
 
-import {
-  addIncome,
-  editIncome,
-  deleteIncome,
-  getAllIncomes,
-} from "../firebase/finance/income/income";
-import { getIncomeCategory } from "../firebase/finance/category/category";
+  const refreshData = () => {
+    getAllIncomes((incomes, categoryTotals) => {
+      setIncomes(incomes);
 
-export default function IncomePage() {
-  const [incomeData, setIncomeData] = useState([]);
-  const [incomeName, setIncomeName] = useState("");
-  const [incomeAmount, setIncomeAmount] = useState("");
-  const [incomeDescription, setIncomeDescription] = useState("");
-  const [incomeCategory, setIncomeCategory] = useState("");
-  const [selectedIncomeId, setSelectedIncomeId] = useState(null);
-  const [showIncomeForm, setShowIncomeForm] = useState(false);
+      const sortedCategories = Object.keys(categoryTotals).sort(
+        (a, b) => categoryTotals[b] - categoryTotals[a]
+      );
 
-  const [incomeCategories, setIncomeCategories] = useState([]);
+      const labels = sortedCategories;
+      const data = labels.map((label) => categoryTotals[label]);
+      const totalIncome = data.reduce((a, b) => a + b, 0);
+      const percentages = data.map((value) =>
+        ((value / totalIncome) * 100).toFixed(2)
+      );
 
-  const svgRef = useRef();
-  const drawPieChart = () => {
-    const width = 300;
-    const height = 300;
-    const radius = Math.min(width, height) / 2;
+      // Generate colors dynamically
+      const colors = labels.map(
+        () => "#" + Math.floor(Math.random() * 16777215).toString(16)
+      );
 
-    const color = d3
-      .scaleOrdinal()
-      .domain(incomeCategories.map((category) => category.name))
-      .range(d3.schemeSet2);
-
-    const svg = d3
-      .select(svgRef.current)
-      .attr("width", width)
-      .attr("height", height);
-
-    const data = d3
-      .pie()
-      .value((d) => d.amount)
-      .sort(null)(incomeData);
-
-    const arc = d3
-      .arc()
-      .innerRadius(radius * 0.5) // Adjust the inner radius to create the ring effect
-      .outerRadius(radius);
-
-    const arcs = svg
-      .selectAll("g.arc")
-      .data(data)
-      .enter()
-      .append("g")
-      .attr("class", "arc")
-      .attr("transform", `translate(${width / 2},${height / 2})`);
-
-    arcs
-      .append("path")
-      .attr("d", arc)
-      .attr("fill", (d) => color(d.data.category))
-      .append("title")
-      .text((d) => `${d.data.category}: ${d.data.amount}`);
-
-    // Display category names below the chart
-    const legend = svg
-      .selectAll(".legend")
-      .data(data)
-      .enter()
-      .append("g")
-      .attr("class", "legend")
-      .attr("transform", (d, i) => `translate(0, ${20 + i * 20})`);
-
-    legend
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr("fill", (d) => color(d.data.category));
-
-    legend
-      .append("text")
-      .attr("x", 20)
-      .attr("y", 12)
-      .text((d) => d.data.category);
+      setChartData({
+        labels,
+        datasets: [
+          {
+            data,
+            backgroundColor: colors,
+          },
+        ],
+        percentages,
+        totalIncome,
+      });
+    });
   };
 
   useEffect(() => {
-    getAllIncomes(setIncomeData);
-    getIncomeCategory(setIncomeCategories);
+    refreshData();
+    getIncomeCategory(setCategories);
   }, []);
 
-  useEffect(() => {
-    drawPieChart();
-  }, [incomeData]);
-
-  const handleEditIncome = async () => {
-    await editIncome(
-      selectedIncomeId,
-      incomeName,
-      incomeAmount,
-      incomeDescription,
-      incomeCategory
-    );
-    setSelectedIncomeId(null);
-    setIncomeName("");
-    setIncomeAmount("");
-    setIncomeDescription("");
-    setIncomeCategory("");
-  };
-
-  const handleDeleteIncome = async (id) => {
-    await deleteIncome(id);
-  };
-
   return (
-    <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between py-6">
-        <div className="flex items-center">
-          <button onClick={() => setShowIncomeForm(true)}>Add Income</button>
-          {showIncomeForm && (
-            <IncomeForm
-              onIncomeAdded={() => {
-                setShowIncomeForm(false);
-                getAllIncomes(setIncomeData);
-              }}
-            />
-          )}
-        </div>
-      </div>
-      <div>
-        {incomeData.map((income) => (
-          <div
-            key={income.id}
-            className="flex items-center justify-between py-3 border-b"
-          >
-            <p>{`Name: ${income.name}, Amount: ${income.amount}, Description: ${income.description}, Category: ${income.category}`}</p>
-
-            <div>
-              <button
-                onClick={() => {
-                  setSelectedIncomeId(income.id);
-                  setIncomeName(income.name);
-                  setIncomeAmount(income.amount);
-                  setIncomeDescription(income.description);
-                  setIncomeCategory(income.category);
+    <div className="flex justify-between">
+      <div className="w-1/2 p-4">
+        <h2 className="text-2xl font-bold mb-4">Income Overview</h2>
+        <h3 className="text-xl mb-2">Total Income: {chartData.totalIncome}</h3>
+        {chartData.labels && chartData.datasets && chartData.datasets[0] && (
+          <Doughnut data={chartData} />
+        )}
+        {chartData.labels &&
+          chartData.datasets &&
+          chartData.datasets[0] &&
+          chartData.percentages &&
+          chartData.labels.map((label, i) => (
+            <div key={i} className="flex items-center mt-2">
+              <span
+                style={{
+                  backgroundColor: chartData.datasets[0].backgroundColor[i],
                 }}
-                className="mr-4 px-3 py-1 bg-yellow-500 text-white rounded-md"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteIncome(income.id)}
-                className="px-3 py-1 bg-red-500 text-white rounded-md"
-              >
-                Delete
-              </button>
+                className="w-4 h-4 mr-2 rounded-full"
+              ></span>
+              {label}: {chartData.datasets[0].data[i]} (
+              {chartData.percentages[i]}%)
             </div>
-          </div>
-        ))}
+          ))}
       </div>
-      {/* Render the SVG element for the pie chart */}
-      <svg ref={svgRef} style={{ height: "400px", marginTop: "20px" }} />
+      <div className="w-1/2 p-4">
+        <h2 className="text-2xl font-bold mb-4">All Incomes</h2>
+        {chartData.labels &&
+          chartData.labels.map((category, i) => (
+            <div key={i} className="mb-4">
+              <h3 className="text-xl font-semibold mb-2">{category}</h3>
+              {incomes
+                .filter((income) => income.category === category)
+                .map((income) => (
+                  <div key={income.id} className="border p-2 mb-2">
+                    <h4 className="font-semibold">{income.name}</h4>
+                    <p>{income.description}</p>
+                    <p>{income.amount}</p>
+                    {/* Add your edit and delete buttons here */}
+                  </div>
+                ))}
+            </div>
+          ))}
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {showForm ? "Hide" : "Add Income"}
+        </button>
+        {showForm && <IncomeForm onIncomeAdded={refreshData} />}
+      </div>
     </div>
   );
-}
+};
+
+export default Finance;

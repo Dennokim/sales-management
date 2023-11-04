@@ -46,15 +46,48 @@ const deleteIncome = async (incomeId) => {
   }
 };
 
-// Get all incomes
+//get income total
 const getAllIncomes = (callback) => {
   onSnapshot(incomeRef, (querySnapshot) => {
     const incomes = [];
+    let categoryTotals = {};
     querySnapshot.forEach((doc) => {
-      incomes.push({ id: doc.id, ...doc.data() });
+      let income = { id: doc.id, ...doc.data() };
+      // Ensure the amount is a number
+      income.amount = Number(income.amount);
+      incomes.push(income);
+
+      // Calculate total income for each category
+      if (categoryTotals[income.category]) {
+        categoryTotals[income.category] += income.amount;
+      } else {
+        categoryTotals[income.category] = income.amount;
+      }
     });
-    callback(incomes);
+
+    callback(incomes, categoryTotals);
   });
 };
 
-export { addIncome, editIncome, deleteIncome, getAllIncomes };
+//get income total for a certain category
+const getIncomeByCategory = (category, callback) => {
+  onSnapshot(incomeRef, (querySnapshot) => {
+    let totalIncome = 0;
+    querySnapshot.forEach((doc) => {
+      let income = { id: doc.id, ...doc.data() };
+      if (income.category === category) {
+        totalIncome += income.amount;
+      }
+    });
+
+    callback(totalIncome);
+  });
+};
+
+export {
+  addIncome,
+  editIncome,
+  deleteIncome,
+  getAllIncomes,
+  getIncomeByCategory,
+};

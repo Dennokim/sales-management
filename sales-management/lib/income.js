@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { getAllIncomes } from "../firebase/finance/income/income";
 import { getIncomeCategory } from "../firebase/finance/category/category";
-import IncomeForm from "@/app/components/incomeForm";
+import IncomeForm from "@/app/components/form/incomeForm";
 
 import { ArcElement, Chart } from "chart.js";
 

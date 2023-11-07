@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getSales } from "../../../firebase/sales/sales";
 import Layout from "../components/Layout";
-import SalesForm from "../components/salesForm";
+import SalesForm from "../components/form/salesForm";
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
@@ -65,15 +65,15 @@ const Sales = () => {
                 ) : (
                   <p>No products found for this sale</p>
                 )}
-                  <p
-                    style={{
-                      color: "blue",
-                      fontWeight: "bold",
-                      textAlign: "end"
-                    }}
-                  >
-                    Total Amount: {sale.totalAmount}
-                  </p>
+                <p
+                  style={{
+                    color: "blue",
+                    fontWeight: "bold",
+                    textAlign: "end",
+                  }}
+                >
+                  Total Amount: {sale.totalAmount}
+                </p>
               </div>
             )}
           </div>

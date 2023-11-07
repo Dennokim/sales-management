@@ -53,7 +53,6 @@ const getAllIncomes = (callback) => {
     let categoryTotals = {};
     querySnapshot.forEach((doc) => {
       let income = { id: doc.id, ...doc.data() };
-      // Ensure the amount is a number
       income.amount = Number(income.amount);
       incomes.push(income);
 

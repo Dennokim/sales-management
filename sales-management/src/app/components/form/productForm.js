@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { addProduct } from "../../../firebase/product/product";
-import { getCategories } from "../../../firebase/category/category";
+import { addProduct } from "../../../../firebase/product/product";
+import { getCategories } from "../../../../firebase/category/category";
 
 const ProductForm = ({ onProductAdded }) => {
   const [categories, setCategories] = useState([]);

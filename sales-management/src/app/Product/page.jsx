@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getProducts, deleteProduct } from "../../../firebase/product/product";
 import Layout from "../components/Layout";
-import ProductForm from "../components/productForm";
+import ProductForm from "../components/form/productForm";
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);

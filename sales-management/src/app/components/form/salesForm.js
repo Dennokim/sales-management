@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { addSales } from "../../../firebase/sales/sales";
+import { addSales } from "../../../../firebase/sales/sales";
 
 const SalesForm = ({ onSaleAdded }) => {
   const [customerName, setCustomerName] = useState("");
